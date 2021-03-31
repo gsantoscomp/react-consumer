@@ -5,12 +5,13 @@ This is a front-end module created to practice some React concepts.
 
 ## How was it built?
 
-    Tutorial is comming... the commands below will be part of it
+Tutorial is comming... the commands below will be part of it
 
     npx create-react-app reactcrud
     cd reactcrud
     yarn add react-router-dom
     yarn add react-bootstrap bootstrap
+    yarn add axios
 
 
 ## Available Scripts
