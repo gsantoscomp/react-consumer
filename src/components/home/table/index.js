@@ -6,10 +6,12 @@ const TableHome = (props) => {
     return (
         <Table striped bordered hover>
             <thead>
-                <td>#</td>
-                <td>Name</td>
-                <td>Email</td>
-                <td>Phone</td>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                </tr>
             </thead>
             <tbody>
                 {
