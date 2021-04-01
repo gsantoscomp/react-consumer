@@ -5,31 +5,43 @@ import CardHome from './card';
 import CardFormHome from './card-form';
 
 const Home = () => {
-    const [clients, setClients] = useState([]);
+    const [alert, setAlert] = useState(false);
+    const [clients, setClients] = useState([]); 
     const [showClientform, setShowClientForm] = useState(false);
 
-    const getClients = async () => {
-        const response = await ClientService.index();
-        return response;
-    }
+    useEffect(() => {
+        let mounted = true;
+        if (clients.length && !alert) {
+            return;
+        }
+
+        ClientService.index().then((clients) => {
+            if (mounted) {
+                setClients(clients.data);
+                setAlert(false);
+            }
+        });
+
+        return () => mounted = false;
+    }, [clients, alert]);
 
     const toogleClientForm = () => {
         setShowClientForm(!showClientform);
     }
 
-    useEffect(() => {
-        getClients().then((clients) => {
-            setClients(clients.data);
-        })
-    }, []);
+    const addClient = (client) => {
+        ClientService.store(client).then((response) => {
+            setAlert(true);
+        });
 
+    }
 
     return (
         <Fragment>
             <DefaulNavbar />
             <div>
-                <CardFormHome showClientForm={showClientform}/>
-                <CardHome clients={clients} toogleClientForm={toogleClientForm}/>
+                <CardFormHome showClientForm={showClientform} addClient={addClient}/>
+                <CardHome clients={clients} showClientForm={showClientform} toogleClientForm={toogleClientForm}/>
             </div>
         </Fragment>
     );

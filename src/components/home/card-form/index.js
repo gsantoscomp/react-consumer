@@ -10,9 +10,7 @@ const CardFormHome = (props) => {
                     <h2>Add Client</h2>
                 </Card.Header>
                 <Card.Body>
-                    <Card.Text>
-                        <FormHome />
-                    </Card.Text>
+                    <FormHome addClient={props.addClient}/>
                 </Card.Body>
             </Card>
         </Collapse>

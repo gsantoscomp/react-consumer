@@ -9,7 +9,9 @@ const CardHome = (props) => {
                     <Row>
                         <Col md={4}><h2>Clients</h2></Col>
                         <Col md={{ span: 4, offset: 4 }}>
-                            <Button className="float-right" variant="outline-success" onClick={() => props.toogleClientForm()}>Add Client</Button>
+                            <Button className="float-right" variant="outline-success" onClick={() => props.toogleClientForm()}>
+                                {props.showClientForm ? "Hide Form": "Show Form"}
+                            </Button>
                         </Col>
                     </Row>
             </Card.Header>
