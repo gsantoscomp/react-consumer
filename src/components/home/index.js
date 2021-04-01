@@ -20,9 +20,9 @@ const Home = () => {
         ClientService.index().then((clients) => {
             if (mounted) {
                 setClients(clients.data);
-                setAlert(setTimeout(() => {
+                setTimeout(() => {
                     setAlert(false);
-                }, 5000));
+                }, 5000);
             }
         });
 
