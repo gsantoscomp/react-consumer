@@ -1,10 +1,12 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import ClientService from '../../services/client';
+import AlertSucess from '../shared/alert';
 import DefaulNavbar from '../shared/default-navbar';
 import CardHome from './card';
 import CardFormHome from './card-form';
 
 const Home = () => {
+    const [message, setMessage] = useState("");
     const [alert, setAlert] = useState(false);
     const [clients, setClients] = useState([]); 
     const [showClientform, setShowClientForm] = useState(false);
@@ -18,7 +20,9 @@ const Home = () => {
         ClientService.index().then((clients) => {
             if (mounted) {
                 setClients(clients.data);
-                setAlert(false);
+                setAlert(setTimeout(() => {
+                    setAlert(false);
+                }, 5000));
             }
         });
 
@@ -32,6 +36,7 @@ const Home = () => {
     const addClient = (client) => {
         ClientService.store(client).then((response) => {
             setAlert(true);
+            setMessage("User Created!")
         });
 
     }
@@ -40,6 +45,7 @@ const Home = () => {
         <Fragment>
             <DefaulNavbar />
             <div>
+                {alert && <AlertSucess show={alert} message={message} />}
                 <CardFormHome showClientForm={showClientform} addClient={addClient}/>
                 <CardHome clients={clients} showClientForm={showClientform} toogleClientForm={toogleClientForm}/>
             </div>

@@ -11,12 +11,13 @@ const TableHome = (props) => {
                     <th>Name</th>
                     <th>Email</th>
                     <th>Phone</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {
                     props.clients.map((client, index) =>
-                        <Client key={client.id} order={index + 1} name={client.name} email={client.email} phone={client.phone} />
+                        <Client key={client.id} order={index + 1} clientId={client.id} name={client.name} email={client.email} phone={client.phone} />
                     )
                 }
             </tbody>

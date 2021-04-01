@@ -10,7 +10,7 @@ const CardHome = (props) => {
                         <Col md={4}><h2>Clients</h2></Col>
                         <Col md={{ span: 4, offset: 4 }}>
                             <Button className="float-right" variant="outline-success" onClick={() => props.toogleClientForm()}>
-                                {props.showClientForm ? "Hide Form": "Show Form"}
+                                {props.showClientForm ? "Hide": "Show"} Form
                             </Button>
                         </Col>
                     </Row>
