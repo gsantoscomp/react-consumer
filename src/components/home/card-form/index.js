@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, Collapse } from 'react-bootstrap';
+import FormHome from '../form';
 
 const CardFormHome = (props) => {
     return (
@@ -10,7 +11,7 @@ const CardFormHome = (props) => {
                 </Card.Header>
                 <Card.Body>
                     <Card.Text>
-                    Form goes here
+                        <FormHome />
                     </Card.Text>
                 </Card.Body>
             </Card>
