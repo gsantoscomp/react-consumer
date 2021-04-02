@@ -16,7 +16,7 @@ const CardHome = (props) => {
                     </Row>
             </Card.Header>
             <Card.Body>
-                <TableHome clients={props.clients} />
+                <TableHome deleteClient={props.deleteClient} clients={props.clients} />
             </Card.Body>
         </Card>
     );

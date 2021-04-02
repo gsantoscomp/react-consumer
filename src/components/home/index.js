@@ -6,14 +6,14 @@ import CardHome from './card';
 import CardFormHome from './card-form';
 
 const Home = () => {
-    const [message, setMessage] = useState("");
-    const [alert, setAlert] = useState(false);
+
+    const [alert, setAlert] = useState({active: false, message: "", type: ""});
     const [clients, setClients] = useState([]); 
     const [showClientform, setShowClientForm] = useState(false);
 
     useEffect(() => {
         let mounted = true;
-        if (clients.length && !alert) {
+        if (clients.length && !alert.active) {
             return;
         }
 
@@ -21,7 +21,7 @@ const Home = () => {
             if (mounted) {
                 setClients(clients.data);
                 setTimeout(() => {
-                    setAlert(false);
+                    setAlert({active: false, message: "", type: ""});
                 }, 5000);
             }
         });
@@ -35,19 +35,23 @@ const Home = () => {
 
     const addClient = (client) => {
         ClientService.store(client).then((response) => {
-            setAlert(true);
-            setMessage("User Created!")
+            setAlert({active: true, message: "User Created", type: "success"});
         });
+    }
 
+    const deleteClient = (idClient) => {
+        ClientService.destroy(idClient).then((response) => {
+            setAlert({active: true, message: "User Deleted", type: "danger"});
+        });
     }
 
     return (
         <Fragment>
             <DefaulNavbar />
             <div>
-                {alert && <AlertSucess show={alert} message={message} />}
+                {alert.active && <AlertSucess alert={alert} />}
                 <CardFormHome showClientForm={showClientform} addClient={addClient}/>
-                <CardHome clients={clients} showClientForm={showClientform} toogleClientForm={toogleClientForm}/>
+                <CardHome clients={clients} showClientForm={showClientform} deleteClient={deleteClient} toogleClientForm={toogleClientForm}/>
             </div>
         </Fragment>
     );
