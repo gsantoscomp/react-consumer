@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import ClientService from '../../services/client';
 import AlertSucess from '../shared/alert';
 import DefaulNavbar from '../shared/default-navbar';
@@ -7,28 +7,41 @@ import CardFormHome from './card-form';
 
 const Home = () => {
 
+    const [needUpdate, setNeedUpdate] = useState(true);
     const [alert, setAlert] = useState({active: false, message: "", type: ""});
     const [clients, setClients] = useState([]); 
     const [showClientform, setShowClientForm] = useState(false);
+    const mounted = useRef(true);
 
     useEffect(() => {
-        let mounted = true;
-        if (clients.length && !alert.active) {
+        mounted.current = true;
+
+        if (clients.length && !needUpdate) {
             return;
         }
 
         ClientService.index().then((clients) => {
-            if (mounted) {
+            if (mounted.current) {
                 setClients(clients.data);
-                setTimeout(() => {
-                    setAlert({active: false, message: "", type: ""});
-                }, 5000);
+                setNeedUpdate(false);
             }
         });
 
-        return () => mounted = false;
-    }, [clients, alert]);
+        return () => {mounted.current = false};
+    }, [clients, needUpdate]);
 
+    useEffect(() => {
+        if (alert.active) {
+            setTimeout(() => {
+                if (mounted.current) {
+                    setAlert({active: false, message: "", type: ""});
+                }
+            }, 2000);
+        }
+        
+        return () => {mounted.current = false}
+    }, [alert]);
+    
     const toogleClientForm = () => {
         setShowClientForm(!showClientform);
     }
@@ -36,12 +49,14 @@ const Home = () => {
     const addClient = (client) => {
         ClientService.store(client).then((response) => {
             setAlert({active: true, message: "User Created", type: "success"});
+            setNeedUpdate(true);
         });
     }
 
     const deleteClient = (idClient) => {
         ClientService.destroy(idClient).then((response) => {
             setAlert({active: true, message: "User Deleted", type: "danger"});
+            setNeedUpdate(true);
         });
     }
 
