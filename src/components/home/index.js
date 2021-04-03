@@ -26,7 +26,7 @@ const Home = () => {
             }
         });
 
-        return () => mounted = false;
+        return () => {mounted = false};
     }, [clients, alert]);
 
     const toogleClientForm = () => {
