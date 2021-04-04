@@ -20,12 +20,12 @@ const FormHome = (props) => {
     }
 
     return (
-        <Form>
+        <Form onSubmit={(event) => handleSubmit(event)}>
             <Form.Row>
                 <Col>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>Name</Form.Label>
-                        <Form.Control type="text" name="name" onChange={event => handleChangeInput(event)} value={client.name}/>
+                        <Form.Control required type="text" name="name" onChange={event => handleChangeInput(event)} value={client.name}/>
                     </Form.Group>
                 </Col>
                 <Col>
@@ -43,7 +43,7 @@ const FormHome = (props) => {
             </Form.Row>
             <Row>
                 <Col md={{ span: 8, offset: 4 }}>
-                    <Button className="float-right" variant="success" onClick={(event) => handleSubmit(event)} type="submit">
+                    <Button className="float-right" variant="success"  type="submit">
                         Submit
                     </Button>
                 </Col>

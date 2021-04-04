@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import ClientService from '../../services/client';
 import AlertSucess from '../shared/alert';
 import DefaulNavbar from '../shared/default-navbar';
@@ -6,48 +6,68 @@ import CardHome from './card';
 import CardFormHome from './card-form';
 
 const Home = () => {
-    const [message, setMessage] = useState("");
-    const [alert, setAlert] = useState(false);
+
+    const [needUpdate, setNeedUpdate] = useState(true);
+    const [alert, setAlert] = useState({active: false, message: "", type: ""});
     const [clients, setClients] = useState([]); 
-    const [showClientform, setShowClientForm] = useState(false);
+    const [showClientForm, setshowClientForm] = useState(false);
+    const mounted = useRef(true);
+
 
     useEffect(() => {
-        let mounted = true;
-        if (clients.length && !alert) {
+        mounted.current = true;
+
+        if (clients.length && !needUpdate) {
             return;
         }
 
         ClientService.index().then((clients) => {
-            if (mounted) {
+            if (mounted.current) {
                 setClients(clients.data);
-                setTimeout(() => {
-                    setAlert(false);
-                }, 5000);
+                setNeedUpdate(false);
             }
         });
 
-        return () => {mounted = false};
-    }, [clients, alert]);
+        return () => {mounted.current = false};
+    }, [clients, needUpdate]);
 
+    useEffect(() => {
+        if (alert.active) {
+            setTimeout(() => {
+                if (mounted.current) {
+                    setAlert({active: false, message: "", type: ""});
+                }
+            }, 2000);
+        }
+        
+        return () => {mounted.current = false}
+    }, [alert]);
+    
     const toogleClientForm = () => {
-        setShowClientForm(!showClientform);
+        setshowClientForm(!showClientForm);
     }
 
     const addClient = (client) => {
         ClientService.store(client).then((response) => {
-            setAlert(true);
-            setMessage("User Created!")
+            setAlert({active: true, message: "User Created", type: "success"});
+            setNeedUpdate(true);
         });
+    }
 
+    const deleteClient = (idClient) => {
+        ClientService.destroy(idClient).then((response) => {
+            setAlert({active: true, message: "User Deleted", type: "danger"});
+            setNeedUpdate(true);
+        });
     }
 
     return (
         <Fragment>
             <DefaulNavbar />
             <div>
-                {alert && <AlertSucess show={alert} message={message} />}
-                <CardFormHome showClientForm={showClientform} addClient={addClient}/>
-                <CardHome clients={clients} showClientForm={showClientform} toogleClientForm={toogleClientForm}/>
+                {alert.active && <AlertSucess alert={alert} />}
+                <CardFormHome showClientForm={showClientForm} addClient={addClient}/>
+                <CardHome clients={clients} showClientForm={showClientForm} deleteClient={deleteClient} toogleClientForm={toogleClientForm}/>
             </div>
         </Fragment>
     );
