@@ -7,9 +7,8 @@ import CardFormHome from './card-form';
 
 const Home = () => {
 
-    const [needUpdate, setNeedUpdate] = useState(true);
+    const [stateClientsList, setStateClientsList] = useState({clients: [], needUpdate: true});
     const [alert, setAlert] = useState({active: false, message: "", type: ""});
-    const [clients, setClients] = useState([]); 
     const [showClientForm, setshowClientForm] = useState(false);
     const mounted = useRef(true);
 
@@ -17,19 +16,21 @@ const Home = () => {
     useEffect(() => {
         mounted.current = true;
 
-        if (clients.length && !needUpdate) {
+        if (!stateClientsList.needUpdate) {
             return;
         }
 
         ClientService.index().then((clients) => {
             if (mounted.current) {
-                setClients(clients.data);
-                setNeedUpdate(false);
+                setStateClientsList({
+                    clients: clients.data,
+                    needUpdate: false
+                });
             }
         });
 
         return () => {mounted.current = false};
-    }, [clients, needUpdate]);
+    }, [stateClientsList]);
 
     useEffect(() => {
         if (alert.active) {
@@ -40,7 +41,6 @@ const Home = () => {
             }, 2000);
         }
         
-        return () => {mounted.current = false}
     }, [alert]);
     
     const toogleClientForm = () => {
@@ -50,14 +50,20 @@ const Home = () => {
     const addClient = (client) => {
         ClientService.store(client).then((response) => {
             setAlert({active: true, message: "User Created", type: "success"});
-            setNeedUpdate(true);
+            setStateClientsList({
+                ...stateClientsList,
+                needUpdate: true
+            });
         });
     }
 
     const deleteClient = (idClient) => {
         ClientService.destroy(idClient).then((response) => {
             setAlert({active: true, message: "User Deleted", type: "danger"});
-            setNeedUpdate(true);
+            setStateClientsList({
+                ...stateClientsList,
+                needUpdate: true
+            });
         });
     }
 
@@ -67,7 +73,7 @@ const Home = () => {
             <div>
                 {alert.active && <AlertSucess alert={alert} />}
                 <CardFormHome showClientForm={showClientForm} addClient={addClient}/>
-                <CardHome clients={clients} showClientForm={showClientForm} deleteClient={deleteClient} toogleClientForm={toogleClientForm}/>
+                <CardHome clients={stateClientsList.clients} showClientForm={showClientForm} deleteClient={deleteClient} toogleClientForm={toogleClientForm}/>
             </div>
         </Fragment>
     );
