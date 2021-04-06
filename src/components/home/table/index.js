@@ -17,7 +17,7 @@ const TableHome = (props) => {
             <tbody>
                 {
                     props.clients.map((client, index) =>
-                        <Client deleteClient={props.deleteClient} key={client.id} order={index + 1} clientId={client.id} name={client.name} email={client.email} phone={client.phone} />
+                        <Client editClient={props.editClient} deleteClient={props.deleteClient} key={client.id} order={index + 1} client={client} />
                     )
                 }
             </tbody>

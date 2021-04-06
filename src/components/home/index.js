@@ -9,7 +9,9 @@ const Home = () => {
 
     const [stateClientsList, setStateClientsList] = useState({clients: [], needUpdate: true});
     const [alert, setAlert] = useState({active: false, message: "", type: ""});
-    const [showClientForm, setshowClientForm] = useState(false);
+    const [clientForm, setClientForm] = useState({client: null, showClientForm: false});
+    // const [showClientForm, setshowClientForm] = useState(false);
+    // const [clientToEdit, setClientToEdit] = useState(null);
     const mounted = useRef(true);
 
 
@@ -44,8 +46,11 @@ const Home = () => {
     }, [alert]);
     
     const toogleClientForm = () => {
-        setshowClientForm(!showClientForm);
-    }
+        setClientForm({
+            ...clientForm,
+            showClientForm: !clientForm.showClientForm
+        });
+    };
 
     const addClient = (client) => {
         ClientService.store(client).then((response) => {
@@ -57,6 +62,26 @@ const Home = () => {
         });
     }
 
+    const editClient = (client) => {
+        let clientFormNewState = {...clientForm, client};
+
+        if (!clientForm.showClientForm) {
+            clientFormNewState.showClientForm = true;
+        }
+
+        setClientForm(clientFormNewState);
+    };
+
+    const updateClient = (client) => {
+        ClientService.edit(client, client.id).then((response) => {
+            setAlert({active: true, message: "User Updated", type: "success"});
+            setStateClientsList({
+                ...stateClientsList,
+                needUpdate: true
+            });
+        });
+    };
+
     const deleteClient = (idClient) => {
         ClientService.destroy(idClient).then((response) => {
             setAlert({active: true, message: "User Deleted", type: "danger"});
@@ -65,15 +90,15 @@ const Home = () => {
                 needUpdate: true
             });
         });
-    }
+    };
 
     return (
         <Fragment>
             <DefaulNavbar />
             <div>
                 {alert.active && <AlertSucess alert={alert} />}
-                <CardFormHome showClientForm={showClientForm} addClient={addClient}/>
-                <CardHome clients={stateClientsList.clients} showClientForm={showClientForm} deleteClient={deleteClient} toogleClientForm={toogleClientForm}/>
+                <CardFormHome clientData={clientForm.client} showClientForm={clientForm.showClientForm} addClient={addClient} updateClient={updateClient}/>
+                <CardHome clients={stateClientsList.clients} showClientForm={clientForm.showClientForm} editClient={editClient} deleteClient={deleteClient} toogleClientForm={toogleClientForm} />
             </div>
         </Fragment>
     );
