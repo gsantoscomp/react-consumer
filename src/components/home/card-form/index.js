@@ -7,7 +7,7 @@ const CardFormHome = (props) => {
         <Collapse in={props.showClientForm}>
             <Card className="some-margin">
                 <Card.Header>
-                    <h2>Add Client</h2>
+                    <h2>Client Info</h2>
                 </Card.Header>
                 <Card.Body>
                     <FormHome clientData={props.clientData} addClient={props.addClient} updateClient={props.updateClient}/>
